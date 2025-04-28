@@ -2,6 +2,8 @@
 #include <stdlib.h>
 #include <string.h>
 
+#define NULLCHAR '\0'
+
 struct Tarea
 {
     int TareaID;//Numérico autoincremental comenzando en 1000
@@ -12,33 +14,59 @@ struct Tarea
 typedef struct Nodo
 {
     Tarea T;
-    Nodo *Siguiente;
+    struct Nodo *Siguiente;
 }Nodo;
 
 Nodo * CrearListaVacia();
 Nodo * CrearNodo(Tarea T);
-void InsertNodoAlFinal(Nodo **Start, Nodo *nodo);
+void InsertarNodo(Nodo **Start, Nodo *Nodo);
+//void InsertNodoAlFinal(Nodo **Start, Nodo *nodo);
 
-// interfaz de carga de tareas pendientes con descripcion y durecion de la misma, 
-// id generado automaticamente autoincremental comenzando del numero 1000
-// al cabo de cada tarea preguntar al usuario si desea agregar una nueva o finalizar la carga
+// Implemente una interfaz para elegir qué tareas de la lista de pendientes
+// deben ser transferidas a la lista de tareas realizadas.  
 
 int main()
 {
     Nodo * Start;
     Start = CrearListaVacia();
     Tarea Datos;
+    int flag = 1;
     char Buff[100];
-    printf("Ingresar la tarea pendiente, decripcion y duracion (10 a 100?): \n");
-    gets(Buff);
-    //fgets(Buff,100,stdin);
-    Datos.Descripcion = (char *)malloc((strlen(Buff) + 1)*sizeof(char));
-    strcpy(Datos.Descripcion,Buff);
+    int IntBuff;
+  
+    for (int i = 1000; flag != 0; i++)
+    {
+        printf("Ingresar la tarea pendiente, decripcion y duracion (10 a 100?): \n");
+        gets(Buff);
+        //fgets(Buff,100,stdin);
+        Datos.Descripcion = (char *)malloc((strlen(Buff) + 1)*sizeof(char));
+        strcpy(Datos.Descripcion,Buff);
 
-    Nodo * nodo = CrearNodo(Datos);
+        printf("Ingrese la duracion: (10 a 100)\n");
+        scanf("%d",&IntBuff);
+        printf("\n");
+        
+        Datos.TareaID = i;
+        
+        Nodo * nodo = CrearNodo(Datos);
+        InsertarNodo(&Start,nodo);
+        
+        printf("Desea ingresar otra tarea?\n\t Y = si\t N = no\n");
+        memset(Buff,0,100);
+        fflush(stdin);
+        gets(Buff);
+
+        if (Buff[0] == 'N' || Buff[0] == 'n')
+        {
+            flag = 1;
+        }
+
+    }    
+    
+    //liberar memoria
 
     
-    
+
     return 0;
 }
 
@@ -62,14 +90,13 @@ void InsertarNodo(Nodo **Start, Nodo *Nodo)
     *Start = Nodo;
 }
 
-void InsertNodoAlFinal(Nodo **Start, Nodo *nodo)
-{
-    Nodo * Aux = *Start;
+// void InsertNodoAlFinal(Nodo **Start, Nodo *nodo)
+// {
+//     Nodo * Aux = *Start;
 
-    while (Aux->Siguiente)
-    {
-        Aux = Aux->Siguiente;
-    }
-    Aux->Siguiente = nodo;
-    
-}
+//     while (Aux->Siguiente)
+//     {
+//         Aux = Aux->Siguiente;
+//     }
+//     Aux->Siguiente = nodo;
+// }
